@@ -1,3 +1,4 @@
+import sys
 import win32com.client
 import numpy as np
 
@@ -74,8 +75,28 @@ class HFSS:
                 "UseMaterialAppearance:=", False
             ])
 
+class HFSS_DEBUG(HFSS):
+    def __init__(self):
+        print("init ansys")
+
+    def new_project(self):
+        print("-function :", sys._getframe().f_code.co_name)
+
+
+    def new_hfss_design(self, name, solution="Terminal"):
+        print("-function :", sys._getframe().f_code.co_name)
+        #print("name = {}, solution = {}".format(name, solution))
+
+    def create_conductor(self, x, y, z, dx, dy, dz, name):
+        print("-function :", sys._getframe().f_code.co_name)
+        #print("x = {}, y = {}, z = {}, dx = {}, dy = {}, dz = {}, name = {}".format(x, y, z, dx, dy, dz, name))
+
+    def create_dielectric(self, x, y, z, radius, height, axis, name):
+        print("-function :", sys._getframe().f_code.co_name, )
+        #print("x = {}, y = {}, z = {}, radius = {}, height = {}, axis = {}, name = {}".format(x, y, z, radius, height, axis, name))
+
 def debug():
-    app = HFSS()
+    app = HFSS_DEBUG()
     app.new_project()
     app.new_hfss_design("test_design")
     app.create_conductor("0mm", "0mm", "0mm", "1mm", "1mm", "1mm", "testbox")
