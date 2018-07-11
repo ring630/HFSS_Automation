@@ -3,25 +3,39 @@ import win32com.client
 import numpy as np
 
 class HFSS:
-    def __init__(self):
+    def __init__(self, design_name):
         app = win32com.client.Dispatch("Ansoft.ElectronicsDesktop")
         self.oDesktop = app.GetAppDesktop()
 
-        self.oProject = None
-        self.oDesign = None
+        self._oProject = None
+        self._oDesign = None
 
-    def new_project(self):
+        self._new_project()
+        self._new_hfss_design(design_name)
 
-        self.oProject = self.oDesktop.NewProject()
+    def _new_project(self):
 
-    def new_hfss_design(self, name, solution="Terminal"):
+        self._oProject = self.oDesktop.NewProject()
 
-        self.oProject.InsertDesign("HFSS", name, solution, "")
-        self.oDesign = self.oProject.SetActiveDesign(name)
+    def _new_hfss_design(self, name, solution="Terminal"):
+
+        self._oProject.InsertDesign("HFSS", name, solution, "")
+        self._oDesign = self._oProject.SetActiveDesign(name)
 
 
     def create_conductor(self, x, y, z, dx, dy, dz, name):
-        oEditor = self.oDesign.SetActiveEditor("3D Modeler")
+        """
+
+        :param x: str mm
+        :param y: str mm
+        :param z: str mm
+        :param dx: str mm
+        :param dy: str mm
+        :param dz: str mm
+        :param name:
+        :return:
+        """
+        oEditor = self._oDesign.SetActiveEditor("3D Modeler")
         oEditor.CreateBox(
             [
                 "NAME:BoxParameters",
@@ -48,7 +62,7 @@ class HFSS:
             ])
 
     def create_dielectric(self, x, y, z, radius, height, axis, name):
-        oEditor = self.oDesign.SetActiveEditor("3D Modeler")
+        oEditor = self._oDesign.SetActiveEditor("3D Modeler")
         oEditor.CreateCylinder(
             [
                 "NAME:CylinderParameters",
@@ -79,11 +93,11 @@ class HFSS_DEBUG(HFSS):
     def __init__(self):
         print("init ansys")
 
-    def new_project(self):
+    def _new_project(self):
         print("-function :", sys._getframe().f_code.co_name)
 
 
-    def new_hfss_design(self, name, solution="Terminal"):
+    def _new_hfss_design(self, name, solution="Terminal"):
         print("-function :", sys._getframe().f_code.co_name)
         #print("name = {}, solution = {}".format(name, solution))
 
@@ -97,8 +111,8 @@ class HFSS_DEBUG(HFSS):
 
 def debug():
     app = HFSS_DEBUG()
-    app.new_project()
-    app.new_hfss_design("test_design")
+    app._new_project()
+    app._new_hfss_design("test_design")
     app.create_conductor("0mm", "0mm", "0mm", "1mm", "1mm", "1mm", "testbox")
     app.create_dielectric("0mm", "0mm", "0mm", "1mm", "1mm", "Z", "testbox")
 
